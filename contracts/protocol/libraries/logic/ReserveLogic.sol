@@ -282,6 +282,7 @@ library ReserveLogic {
    * @param reserve The reserve reserve to be updated
    * @param reserveCache The cache layer holding the cached protocol data
    */
+  // 这个就是更新贴现变量
   function _updateIndexes(
     DataTypes.ReserveData storage reserve,
     DataTypes.ReserveCache memory reserveCache

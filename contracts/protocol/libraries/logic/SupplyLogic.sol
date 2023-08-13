@@ -57,15 +57,19 @@ library SupplyLogic {
   ) external {
     DataTypes.ReserveData storage reserve = reservesData[params.asset];
     DataTypes.ReserveCache memory reserveCache = reserve.cache();
-
+    // reserve是一个数据结构 DataTypes.ReserveData，为什么可以调用updateState方法？
+    // 因为在supplyLigic合约中有 using ReserveLogic for DataTypes.ReserveData;
+    // 它的作用是为DataTypes.ReserveData这个结构体添加ReserveLogic库中定义的方法。
+    // 在solidity中可以使用using关键字可以将库中的方法添加到特定的类型上,这样该类型的对象就可以直接调用库中的方法。
+    // 而 ReserveLogic 就是一个库 library
     reserve.updateState(reserveCache);
 
     ValidationLogic.validateSupply(reserveCache, reserve, params.amount);
 
     reserve.updateInterestRates(reserveCache, params.asset, params.amount, 0);
-
+    // 这是把真实的asset token转到 aave合约专门为 asset资产创建的aToken合约中了？
     IERC20(params.asset).safeTransferFrom(msg.sender, reserveCache.aTokenAddress, params.amount);
-
+    // atoken 合约 给 msg.sender 铸造atoken
     bool isFirstSupply = IAToken(reserveCache.aTokenAddress).mint(
       msg.sender,
       params.onBehalfOf,
