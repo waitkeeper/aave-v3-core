@@ -12,6 +12,7 @@ library MathUtils {
   using WadRayMath for uint256;
 
   /// @dev Ignoring leap years
+  // solidity中的特殊语法，表示365天,单位是seconds。
   uint256 internal constant SECONDS_PER_YEAR = 365 days;
 
   /**

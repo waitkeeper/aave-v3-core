@@ -99,7 +99,7 @@ library ReserveLogic {
     if (reserve.lastUpdateTimestamp == uint40(block.timestamp)) {
       return;
     }
-
+    // 更新Index(即贴现变量)的_updateIndexes函数
     _updateIndexes(reserve, reserveCache);
     _accrueToTreasury(reserve, reserveCache);
 
@@ -224,7 +224,7 @@ library ReserveLogic {
   }
 
   /**
-   * @notice Mints part of the repaid interest to the reserve treasury as a function of the reserve factor for the
+   * @notice Mints part of the repaid interest to the reserve treasury（国库） as a function of the reserve factor for the
    * specific asset.
    * @param reserve The reserve to be updated
    * @param reserveCache The caching layer for the reserve data
@@ -281,8 +281,7 @@ library ReserveLogic {
    * @notice Updates the reserve indexes and the timestamp of the update.
    * @param reserve The reserve reserve to be updated
    * @param reserveCache The cache layer holding the cached protocol data
-   */
-  // 这个就是更新贴现变量
+   */ 
   function _updateIndexes(
     DataTypes.ReserveData storage reserve,
     DataTypes.ReserveCache memory reserveCache
@@ -305,6 +304,8 @@ library ReserveLogic {
     // reserveCache.currVariableBorrowRate != 0 is not a correct validation,
     // because a positive base variable rate can be stored on
     // reserveCache.currVariableBorrowRate, but the index should not increase
+    // 更新nextVariableBorrowIndex的过程与上述过程基本类似，但有一点不同，
+    // 浮动利率贴现因子严格按照复利进行计算，调用calculateCompoundedInterest函数计算复利
     if (reserveCache.currScaledVariableDebt != 0) {
       uint256 cumulatedVariableBorrowInterest = MathUtils.calculateCompoundedInterest(
         reserveCache.currVariableBorrowRate,

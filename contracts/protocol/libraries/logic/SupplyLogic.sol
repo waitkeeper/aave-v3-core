@@ -62,6 +62,7 @@ library SupplyLogic {
     // 它的作用是为DataTypes.ReserveData这个结构体添加ReserveLogic库中定义的方法。
     // 在solidity中可以使用using关键字可以将库中的方法添加到特定的类型上,这样该类型的对象就可以直接调用库中的方法。
     // 而 ReserveLogic 就是一个库 library
+
     reserve.updateState(reserveCache);
 
     ValidationLogic.validateSupply(reserveCache, reserve, params.amount);
